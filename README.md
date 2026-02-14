@@ -278,9 +278,9 @@ The extension calculates a risk score (0-100) based on:
 - Firefox: Manifest V2/V3 (automatic via Plasmo)
 - Safari: Requires Xcode wrapper for App Store distribution
 
-## License
+## 📝 License
 
-MIT
+This project is licensed under the [Apache License 2.0](LICENSE).
 
 ## Contributing
 
