@@ -45,7 +45,7 @@ export interface EmailContent {
   timestamp: number
 }
 
-export interface SentriPhishConfig {
+export interface AegisConfig {
   apiEndpoint: string
   ollamaEndpoint: string
   enabledLayers: {

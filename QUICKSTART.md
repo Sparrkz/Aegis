@@ -1,4 +1,4 @@
-# SentriPhish - Quick Start Guide
+# Aegis - Quick Start Guide
 
 ## 5-Minute Setup
 

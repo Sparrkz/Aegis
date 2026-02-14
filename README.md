@@ -1,4 +1,4 @@
-# SentriPhish - AI-Powered Phishing Detection Extension
+# Aegis - AI-Powered Phishing Detection Extension
 
 A production-ready browser extension that detects phishing using multi-layer technical checks and LLM-based intent analysis.
 
@@ -94,15 +94,15 @@ curl http://localhost:11434/api/tags
 ## Project Structure
 
 ```
-sentriphish/
+aegis/
 ├── src/
 │   ├── background/              # Background service worker
 │   │   └── index.ts             # Multi-layer scan orchestrator
 │   ├── components/              # React UI components
 │   │   ├── FloatingShield.tsx   # Draggable shield icon
-│   │   ├── SentriScore.tsx      # Circular risk gauge
+│   │   ├── AegisScore.tsx      # Circular risk gauge
 │   │   ├── SidebarPanel.tsx     # Detailed results sidebar
-│   │   └── SentriPhishOverlay.tsx # Main Shadow DOM overlay
+│   │   └── AegisOverlay.tsx # Main Shadow DOM overlay
 │   ├── utils/                   # Utility functions
 │   │   ├── emailExtractors.ts   # Gmail/Outlook/LinkedIn scrapers
 │   │   └── security.ts          # Sanitization & PII removal
@@ -135,7 +135,7 @@ sentriphish/
    - Cross-browser Plasmo setup with TypeScript
    - Shadow DOM overlay for UI isolation
    - Floating shield icon with drag-and-drop
-   - Circular SentriScore gauge
+   - Circular AegisScore gauge
    - Detailed sidebar with all layer results
    - Email extractors for Gmail, Outlook, LinkedIn
 
@@ -264,7 +264,7 @@ The extension requires the following permissions:
 3. **Local Processing**: LLM runs entirely on local machine
 4. **Shadow DOM Isolation**: UI cannot be manipulated by host websites
 
-## SentriScore
+## AegisScore
 
 The extension calculates a risk score (0-100) based on:
 

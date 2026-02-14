@@ -1,4 +1,4 @@
-# SentriPhish - Development Setup Status
+# Aegis - Development Setup Status
 
 ## ✅ Completed
 

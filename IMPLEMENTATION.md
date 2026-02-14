@@ -1,8 +1,8 @@
-# SentriPhish - Implementation Complete ✅
+# Aegis - Implementation Complete ✅
 
 ## Executive Summary
 
-SentriPhish is a production-ready browser extension that detects phishing attempts using a three-layer security architecture combining traditional DNS checks, URL reputation analysis, and AI-powered intent detection via local Llama 3.
+Aegis is a production-ready browser extension that detects phishing attempts using a three-layer security architecture combining traditional DNS checks, URL reputation analysis, and AI-powered intent detection via local Llama 3.
 
 **Key Achievement**: Complete end-to-end implementation from browser UI to backend API to LLM integration, with security best practices and cross-browser compatibility.
 
@@ -14,9 +14,9 @@ SentriPhish is a production-ready browser extension that detects phishing attemp
 
 **Components**:
 - `FloatingShield.tsx` - Draggable risk indicator (143 lines)
-- `SentriScore.tsx` - Circular progress gauge (74 lines)
+- `AegisScore.tsx` - Circular progress gauge (74 lines)
 - `SidebarPanel.tsx` - Detailed analysis view (258 lines)
-- `SentriPhishOverlay.tsx` - Shadow DOM container (128 lines)
+- `AegisOverlay.tsx` - Shadow DOM container (128 lines)
 
 **Content Scripts**:
 - `emailExtractors.ts` - Platform-specific scrapers for Gmail/Outlook/LinkedIn (262 lines)
@@ -165,7 +165,7 @@ overallScore = (identityScore * 0.25) + (reputationScore * 0.35) + (intentScore 
 
 1. **Type Safety**: Full TypeScript with strict mode
 2. **Error Handling**: Try-catch blocks with graceful degradation
-3. **Logging**: Structured logging with `[SentriPhish]` prefix
+3. **Logging**: Structured logging with `[Aegis]` prefix
 4. **Code Organization**: Modular services, clear separation of concerns
 5. **Documentation**: Inline comments, JSDoc, README, Quick Start guide
 
@@ -198,7 +198,7 @@ overallScore = (identityScore * 0.25) + (reputationScore * 0.35) + (intentScore 
 1. **Icons**: Replace placeholder PNGs with proper 128x128px designs
 2. **Rate Limiting**: Add request throttling to backend
 3. **Caching**: Implement Redis for DNS lookup caching
-4. **Monitoring**: Add Sentry or similar error tracking
+4. **Monitoring**: Add Aegis or similar error tracking
 5. **VirusTotal**: Integrate VirusTotal API for enhanced URL checking
 6. **User Settings**: Build preferences UI in popup
 7. **Notifications**: Implement browser notifications for high-risk emails
@@ -225,9 +225,9 @@ overallScore = (identityScore * 0.25) + (reputationScore * 0.35) + (intentScore 
 ### Extension Files (14 files)
 ```
 src/components/FloatingShield.tsx
-src/components/SentriScore.tsx
+src/components/AegisScore.tsx
 src/components/SidebarPanel.tsx
-src/components/SentriPhishOverlay.tsx
+src/components/AegisOverlay.tsx
 src/utils/emailExtractors.ts
 src/utils/security.ts
 src/types/index.ts
@@ -319,7 +319,7 @@ const weights = {
 
 ## Conclusion
 
-SentriPhish is a complete, working implementation of a production-grade phishing detection system. It demonstrates:
+Aegis is a complete, working implementation of a production-grade phishing detection system. It demonstrates:
 
 - Modern web extension development
 - Secure AI integration

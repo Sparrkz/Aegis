@@ -1,6 +1,6 @@
 # Icon Assets
 
-SentriPhish requires icon files in PNG format. Please provide the following icon sizes:
+Aegis requires icon files in PNG format. Please provide the following icon sizes:
 
 - `icon16.png` - 16x16 pixels
 - `icon32.png` - 32x32 pixels

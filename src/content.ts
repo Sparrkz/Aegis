@@ -1,5 +1,5 @@
 import type { PlasmoCSConfig } from "plasmo"
-import { mountSentriPhishOverlay } from "./components/SentriPhishOverlay"
+import { mountAegisOverlay } from "./components/AegisOverlay"
 import { getEmailExtractor } from "./utils/emailExtractors"
 import { debounce } from "./utils/security"
 import type { EmailContent, ExtensionMessage, ScanResult } from "./types"
@@ -15,22 +15,22 @@ export const config: PlasmoCSConfig = {
   all_frames: false
 }
 
-console.log("[SentriPhish] Content script loaded")
+console.log("[Aegis] Content script loaded")
 
 // Mount the overlay UI with Shadow DOM
-mountSentriPhishOverlay()
+mountAegisOverlay()
 
 // Get the appropriate email extractor for the current site
 const extractor = getEmailExtractor()
 
 if (!extractor) {
-  console.log("[SentriPhish] No compatible email platform detected")
+  console.log("[Aegis] No compatible email platform detected")
 } else {
-  console.log("[SentriPhish] Email extractor initialized")
+  console.log("[Aegis] Email extractor initialized")
 
   // Debounced scan function to avoid excessive API calls
   const scanEmail = debounce(async (email: EmailContent) => {
-    console.log("[SentriPhish] Scanning email:", email.subject)
+    console.log("[Aegis] Scanning email:", email.subject)
 
     // Send scanning status to overlay
     window.postMessage(
@@ -64,9 +64,9 @@ if (!extractor) {
         "*"
       )
 
-      console.log("[SentriPhish] Scan complete. Score:", response.result.overallScore)
+      console.log("[Aegis] Scan complete. Score:", response.result.overallScore)
     } catch (error) {
-      console.error("[SentriPhish] Scan error:", error)
+      console.error("[Aegis] Scan error:", error)
 
       window.postMessage(
         {

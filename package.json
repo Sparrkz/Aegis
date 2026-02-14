@@ -1,6 +1,6 @@
 {
-  "name": "sentriphish",
-  "displayName": "SentriPhish",
+  "name": "aegis",
+  "displayName": "Aegis",
   "version": "1.0.0",
   "description": "Browser extension for phishing detection using technical checks and LLM-based intent analysis",
   "author": "",

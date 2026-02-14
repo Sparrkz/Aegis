@@ -1,6 +1,6 @@
 import React from "react"
 import type { ScanResult } from "../types"
-import { SentriScore } from "./SentriScore"
+import { AegisScore } from "./AegisScore"
 
 interface SidebarPanelProps {
   isVisible: boolean
@@ -36,7 +36,7 @@ export const SidebarPanel: React.FC<SidebarPanelProps> = ({
             <span className="text-white text-xl">🛡️</span>
           </div>
           <div>
-            <h2 className="text-lg font-bold text-gray-900">SentriPhish</h2>
+            <h2 className="text-lg font-bold text-gray-900">Aegis</h2>
             <p className="text-xs text-gray-600">Security Analysis</p>
           </div>
         </div>
@@ -75,14 +75,14 @@ export const SidebarPanel: React.FC<SidebarPanelProps> = ({
           </div>
         ) : isScanning ? (
           <div className="text-center py-12">
-            <SentriScore score={0} isScanning={true} />
+            <AegisScore score={0} isScanning={true} />
             <p className="text-gray-600 mt-4">Analyzing email security...</p>
           </div>
         ) : scanResult ? (
           <>
             {/* Overall Score */}
             <div className="scan-card text-center">
-              <SentriScore score={scanResult.overallScore} />
+              <AegisScore score={scanResult.overallScore} />
               <div className="mt-4 text-xs text-gray-500">
                 Scanned {new Date(scanResult.timestamp).toLocaleString()}
               </div>
@@ -257,7 +257,7 @@ export const SidebarPanel: React.FC<SidebarPanelProps> = ({
       {/* Footer */}
       <div className="p-4 border-t border-gray-200 bg-gray-50">
         <div className="text-xs text-gray-600 text-center">
-          Protected by SentriPhish AI Security
+          Protected by Aegis AI Security
         </div>
       </div>
     </div>

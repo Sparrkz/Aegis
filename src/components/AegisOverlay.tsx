@@ -5,7 +5,7 @@ import { FloatingShield } from "./FloatingShield"
 import { SidebarPanel } from "./SidebarPanel"
 import styleText from "data-text:../style.css"
 
-const SentriPhishOverlay: React.FC = () => {
+const AegisOverlay: React.FC = () => {
   const [state, setState] = useState<OverlayState>({
     isVisible: false,
     isExpanded: false,
@@ -108,15 +108,15 @@ const SentriPhishOverlay: React.FC = () => {
 }
 
 // Inject into Shadow DOM
-export const mountSentriPhishOverlay = () => {
+export const mountAegisOverlay = () => {
   // Check if already mounted
-  if (document.getElementById("sentriphish-root")) {
+  if (document.getElementById("aegis-root")) {
     return
   }
 
   // Create container
   const container = document.createElement("div")
-  container.id = "sentriphish-root"
+  container.id = "aegis-root"
   container.style.cssText = "all: initial; position: fixed; z-index: 2147483647;"
 
   // Attach Shadow DOM
@@ -136,7 +136,7 @@ export const mountSentriPhishOverlay = () => {
 
   // Mount React app
   const root = createRoot(reactRoot)
-  root.render(<SentriPhishOverlay />)
+  root.render(<AegisOverlay />)
 
-  console.log("[SentriPhish] Overlay mounted with Shadow DOM")
+  console.log("[Aegis] Overlay mounted with Shadow DOM")
 }

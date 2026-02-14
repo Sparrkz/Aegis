@@ -47,7 +47,7 @@ class GmailExtractor implements EmailExtractor {
         timestamp: Date.now()
       }
     } catch (error) {
-      console.error("[SentriPhish] Gmail extraction error:", error)
+      console.error("[Aegis] Gmail extraction error:", error)
       return null
     }
   }
@@ -116,7 +116,7 @@ class OutlookExtractor implements EmailExtractor {
         timestamp: Date.now()
       }
     } catch (error) {
-      console.error("[SentriPhish] Outlook extraction error:", error)
+      console.error("[Aegis] Outlook extraction error:", error)
       return null
     }
   }
@@ -179,7 +179,7 @@ class LinkedInExtractor implements EmailExtractor {
         timestamp: Date.now()
       }
     } catch (error) {
-      console.error("[SentriPhish] LinkedIn extraction error:", error)
+      console.error("[Aegis] LinkedIn extraction error:", error)
       return null
     }
   }

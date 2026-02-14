@@ -97,7 +97,7 @@ export const FloatingShield: React.FC<FloatingShieldProps> = ({
       }}
       onMouseDown={handleMouseDown}
       onClick={handleClick}
-      title="SentriPhish - Click to view scan results"
+      title="Aegis - Click to view scan results"
     >
       <span className="select-none">{getShieldIcon()}</span>
 

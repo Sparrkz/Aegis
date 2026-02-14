@@ -1,11 +1,11 @@
 import React from "react"
 
-interface SentriScoreProps {
+interface AegisScoreProps {
   score: number
   isScanning?: boolean
 }
 
-export const SentriScore: React.FC<SentriScoreProps> = ({ score, isScanning = false }) => {
+export const AegisScore: React.FC<AegisScoreProps> = ({ score, isScanning = false }) => {
   const radius = 60
   const circumference = 2 * Math.PI * radius
   const offset = circumference - (score / 100) * circumference

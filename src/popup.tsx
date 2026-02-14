@@ -8,7 +8,7 @@ function IndexPopup() {
           <span className="text-white text-xl">🛡️</span>
         </div>
         <div>
-          <h1 className="text-xl font-bold text-gray-900">SentriPhish</h1>
+          <h1 className="text-xl font-bold text-gray-900">Aegis</h1>
           <p className="text-xs text-gray-600">Phishing Detection Extension</p>
         </div>
       </div>

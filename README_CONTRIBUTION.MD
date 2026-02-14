@@ -20,5 +20,5 @@ Aegis is Open Source! We are currently looking for help with:
 
 Optimizing local LLM latency.
 Firefox/Safari compatibility.
-Refining the "SentriScore" algorithm.
+Refining the "AegisScore" algorithm.
 License: MIT

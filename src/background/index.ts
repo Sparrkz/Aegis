@@ -5,7 +5,7 @@ import type {
   IdentityCheck,
   ReputationCheck,
   IntentAnalysis,
-  SentriPhishConfig
+  AegisConfig
 } from "../types"
 import {
   sanitizeForLLM,
@@ -15,10 +15,10 @@ import {
   reputationToScore
 } from "../utils/security"
 
-console.log("[SentriPhish] Background service worker initialized")
+console.log("[Aegis] Background service worker initialized")
 
 // Default configuration
-const DEFAULT_CONFIG: SentriPhishConfig = {
+const DEFAULT_CONFIG: AegisConfig = {
   apiEndpoint: "http://localhost:8000",
   ollamaEndpoint: "http://localhost:11434",
   enabledLayers: {
@@ -29,7 +29,7 @@ const DEFAULT_CONFIG: SentriPhishConfig = {
 }
 
 // Get configuration from storage
-async function getConfig(): Promise<SentriPhishConfig> {
+async function getConfig(): Promise<AegisConfig> {
   const result = await Browser.storage.local.get(["config"])
   return { ...DEFAULT_CONFIG, ...result.config }
 }
@@ -39,7 +39,7 @@ async function getConfig(): Promise<SentriPhishConfig> {
 // ============================================
 
 async function performIdentityCheck(email: EmailContent): Promise<IdentityCheck> {
-  console.log("[SentriPhish] Performing identity check for:", email.senderDomain)
+  console.log("[Aegis] Performing identity check for:", email.senderDomain)
 
   try {
     const config = await getConfig()
@@ -68,7 +68,7 @@ async function performIdentityCheck(email: EmailContent): Promise<IdentityCheck>
       domain: email.senderDomain
     }
   } catch (error) {
-    console.error("[SentriPhish] Identity check error:", error)
+    console.error("[Aegis] Identity check error:", error)
 
     // Return unverified on error (backend might not be running)
     return {
@@ -86,7 +86,7 @@ async function performIdentityCheck(email: EmailContent): Promise<IdentityCheck>
 // ============================================
 
 async function performReputationCheck(email: EmailContent): Promise<ReputationCheck> {
-  console.log("[SentriPhish] Performing reputation check. URLs found:", email.urls.length)
+  console.log("[Aegis] Performing reputation check. URLs found:", email.urls.length)
 
   try {
     const config = await getConfig()
@@ -113,7 +113,7 @@ async function performReputationCheck(email: EmailContent): Promise<ReputationCh
       flaggedDomains: data.flaggedDomains || []
     }
   } catch (error) {
-    console.error("[SentriPhish] Reputation check error:", error)
+    console.error("[Aegis] Reputation check error:", error)
 
     // Return safe default on error
     return {
@@ -134,7 +134,7 @@ async function performReputationCheck(email: EmailContent): Promise<ReputationCh
 // ============================================
 
 async function performIntentAnalysis(email: EmailContent): Promise<IntentAnalysis> {
-  console.log("[SentriPhish] Performing intent analysis with LLM")
+  console.log("[Aegis] Performing intent analysis with LLM")
 
   try {
     const config = await getConfig()
@@ -169,7 +169,7 @@ async function performIntentAnalysis(email: EmailContent): Promise<IntentAnalysi
       financialPressure: data.financial_pressure || 0
     }
   } catch (error) {
-    console.error("[SentriPhish] Intent analysis error:", error)
+    console.error("[Aegis] Intent analysis error:", error)
 
     // Return safe default on error
     return {
@@ -188,7 +188,7 @@ async function performIntentAnalysis(email: EmailContent): Promise<IntentAnalysi
 // ============================================
 
 async function scanEmail(email: EmailContent): Promise<ScanResult> {
-  console.log("[SentriPhish] Starting multi-layer scan for email:", email.subject)
+  console.log("[Aegis] Starting multi-layer scan for email:", email.subject)
 
   const config = await getConfig()
 
@@ -250,7 +250,7 @@ async function scanEmail(email: EmailContent): Promise<ScanResult> {
     timestamp: Date.now()
   }
 
-  console.log("[SentriPhish] Scan complete. Overall score:", overallScore)
+  console.log("[Aegis] Scan complete. Overall score:", overallScore)
 
   return result
 }
@@ -260,7 +260,7 @@ async function scanEmail(email: EmailContent): Promise<ScanResult> {
 // ============================================
 
 Browser.runtime.onMessage.addListener(async (message, sender) => {
-  console.log("[SentriPhish] Received message:", message.type)
+  console.log("[Aegis] Received message:", message.type)
 
   if (message.type === "SCAN_EMAIL") {
     try {
@@ -269,7 +269,7 @@ Browser.runtime.onMessage.addListener(async (message, sender) => {
 
       return { result }
     } catch (error) {
-      console.error("[SentriPhish] Scan failed:", error)
+      console.error("[Aegis] Scan failed:", error)
       return {
         error: error instanceof Error ? error.message : "Scan failed"
       }
@@ -282,7 +282,7 @@ Browser.runtime.onMessage.addListener(async (message, sender) => {
 // Listen for installation
 Browser.runtime.onInstalled.addListener(async (details) => {
   if (details.reason === "install") {
-    console.log("[SentriPhish] Extension installed")
+    console.log("[Aegis] Extension installed")
 
     // Set default configuration
     await Browser.storage.local.set({ config: DEFAULT_CONFIG })

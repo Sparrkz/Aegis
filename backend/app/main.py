@@ -28,8 +28,8 @@ logger = logging.getLogger(__name__)
 
 # Initialize FastAPI app
 app = FastAPI(
-    title="SentriPhish API",
-    description="Backend API for SentriPhish phishing detection system",
+    title="Aegis API",
+    description="Backend API for Aegis phishing detection system",
     version="1.0.0"
 )
 
@@ -60,7 +60,7 @@ intent_service = IntentService(ollama_endpoint=ollama_endpoint)
 async def root():
     """Health check endpoint"""
     return {
-        "service": "SentriPhish API",
+        "service": "Aegis API",
         "status": "running",
         "version": "1.0.0"
     }
