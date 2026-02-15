@@ -1,8 +1,8 @@
 export interface ScanResult {
-  riskScore: number
-  identityLayer: IdentityCheck
-  reputationLayer: ReputationCheck
-  intentLayer: IntentAnalysis
+  overallScore: number
+  identity: IdentityCheck
+  reputation: ReputationCheck
+  intent: IntentAnalysis
   timestamp: number
 }
 

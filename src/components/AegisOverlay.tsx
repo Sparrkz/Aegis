@@ -23,12 +23,22 @@ const AegisOverlay: React.FC = () => {
 
       switch (message.type) {
         case "SCAN_RESULT":
-          setState(prev => ({
-            ...prev,
-            currentScan: message.payload as ScanResult,
-            isScanning: false,
-            isExpanded: true
-          }))
+          if (message.payload === null) {
+            setState(prev => ({
+              ...prev,
+              isScanning: true,
+              isExpanded: true,
+              error: undefined
+            }))
+          } else {
+            setState(prev => ({
+              ...prev,
+              currentScan: message.payload as ScanResult,
+              isScanning: false,
+              isExpanded: true,
+              error: undefined
+            }))
+          }
           break
 
         case "UPDATE_SCORE":

@@ -1,3 +1,4 @@
+import { debounce } from "./security"
 import type { EmailContent } from "../types"
 
 // Base extractor interface
@@ -19,17 +20,26 @@ class GmailExtractor implements EmailExtractor {
     if (!emailView) return null
 
     try {
-      // Extract sender
-      const senderElement = emailView.querySelector('[email]')
-      const sender = senderElement?.getAttribute("email") || ""
-      const senderDomain = sender.split("@")[1] || ""
+      // Extract sender - Try multiple common selectors
+      const senderElement = 
+        emailView.querySelector('[email]') || 
+        emailView.querySelector('.gD') || 
+        emailView.querySelector('.go')
+      
+      const sender = senderElement?.getAttribute("email") || 
+                     senderElement?.getAttribute("data-hovercard-id") || 
+                     senderElement?.textContent?.trim() || ""
+      
+      const senderDomain = sender.includes("@") ? sender.split("@")[1] : ""
 
       // Extract subject
-      const subjectElement = emailView.querySelector('h2[data-thread-perm-id]')
+      const subjectElement = 
+        emailView.querySelector('h2[data-thread-perm-id]') || 
+        emailView.querySelector('h2.hP')
       const subject = subjectElement?.textContent?.trim() || ""
 
-      // Extract body
-      const bodyElement = emailView.querySelector('[data-message-id] .a3s')
+      // Extract body - .a3s is the standard message body container
+      const bodyElement = emailView.querySelector('.a3s')
       const body = bodyElement?.textContent?.trim() || ""
 
       // Extract URLs
@@ -53,21 +63,41 @@ class GmailExtractor implements EmailExtractor {
   }
 
   observeChanges(callback: (email: EmailContent) => void): void {
-    const observer = new MutationObserver(() => {
+    let lastContentId = ""
+
+    const debouncedCheck = debounce(() => {
       const email = this.extractEmail()
-      if (email && email.body) {
+      // Use subject + body length as a unique ID for the current view
+      const contentId = email ? `${email.subject}-${email.body.length}` : ""
+      
+      if (email && email.body && contentId !== lastContentId) {
+        lastContentId = contentId
+        console.log("[Aegis] New email detected via observer")
         callback(email)
+      }
+    }, 1000)
+
+    const observer = new MutationObserver((mutations) => {
+      // Check if any relevant changes occurred
+      const hasMeaningfulChanges = mutations.some(m => 
+        m.type === 'childList' || 
+        (m.type === 'attributes' && (m.target as HTMLElement).classList?.contains('a3s'))
+      )
+      
+      if (hasMeaningfulChanges) {
+        debouncedCheck()
       }
     })
 
-    // Observe main content area
-    const mainContent = document.querySelector('[role="main"]')
-    if (mainContent) {
-      observer.observe(mainContent, {
-        childList: true,
-        subtree: true
-      })
-    }
+    // Observe body for shifts in the SPA
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['class', 'style']
+    })
+    
+    console.log("[Aegis] Gmail observer intensive monitoring started")
   }
 }
 

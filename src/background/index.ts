@@ -243,10 +243,10 @@ async function scanEmail(email: EmailContent): Promise<ScanResult> {
   const overallScore = calculateOverallScore(identityScore, reputationScore, intentScore)
 
   const result: ScanResult = {
-    riskScore: overallScore,
-    identityLayer: identity,
-    reputationLayer: reputation,
-    intentLayer: intent,
+    overallScore,
+    identity,
+    reputation,
+    intent,
     timestamp: Date.now()
   }
 
