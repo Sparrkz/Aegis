@@ -10,7 +10,7 @@ const minimalPNG = Buffer.from(
   'base64'
 );
 
-const sizes = [16, 32, 48, 128];
+const sizes = [16, 32, 48, 128, 512];
 const assetsDir = path.join(__dirname, 'assets');
 
 // Create assets directory if it doesn't exist
@@ -23,6 +23,11 @@ sizes.forEach(size => {
   fs.writeFileSync(filename, minimalPNG);
   console.log(`Created ${filename}`);
 });
+
+// Also create the base icon.png which Plasmo expects
+const baseIcon = path.join(assetsDir, 'icon.png');
+fs.writeFileSync(baseIcon, minimalPNG);
+console.log(`Created ${baseIcon}`);
 
 console.log('Placeholder icons created successfully!');
 console.log('Note: Replace with proper design assets for production.');
