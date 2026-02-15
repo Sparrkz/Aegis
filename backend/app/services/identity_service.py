@@ -12,8 +12,8 @@ class IdentityService:
 
     def __init__(self):
         self.resolver = dns.resolver.Resolver()
-        self.resolver.timeout = 5
-        self.resolver.lifetime = 5
+        self.resolver.timeout = 10.0
+        self.resolver.lifetime = 10.0
 
     async def check_spf(self, domain: str) -> bool:
         """Check if domain has valid SPF record"""

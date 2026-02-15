@@ -17,13 +17,32 @@ class ReputationService:
         self.suspicious_tlds = ['.tk', '.ml', '.ga', '.cf', '.gq', '.xyz', '.top']
         self.suspicious_keywords = ['verify', 'account', 'suspended', 'urgent', 'confirm', 'update', 'secure']
 
-    async def get_domain_age(self, domain: str) -> int:
+    async def get_domain_age(self, domain_or_url: str) -> int:
         """
         Get domain age in days
         Returns 0 if unable to determine
         """
         try:
-            w = whois.whois(domain)
+            # Extract domain if a URL was passed
+            domain = domain_or_url
+            if '://' in domain:
+                domain = urlparse(domain).netloc
+            
+            # Remove port if present
+            domain = domain.split(':')[0]
+            
+            # For subdomains, we should check the root domain
+            # Very basic approach: take the last two parts
+            parts = domain.split('.')
+            if len(parts) > 2:
+                # Handle cases like .co.uk if needed, but for now just take last 2
+                # A better approach would be using tldextract
+                search_domain = '.'.join(parts[-2:])
+            else:
+                search_domain = domain
+
+            logger.info(f"Querying WHOIS for {search_domain}")
+            w = whois.whois(search_domain)
 
             if isinstance(w.creation_date, list):
                 creation_date = w.creation_date[0]

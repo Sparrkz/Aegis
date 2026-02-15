@@ -67,22 +67,28 @@ Body: {{BODY}}
                     "prompt": prompt,
                     "stream": False,
                     "options": {
-                        "temperature": 0.3,  # Lower temperature for more consistent responses
+                        "temperature": 0.3,
                         "top_p": 0.9
                     }
                 }
 
+                logger.info(f"Connecting to Ollama at {self.ollama_endpoint}")
                 async with session.post(
                     f"{self.ollama_endpoint}/api/generate",
                     json=payload,
                     timeout=aiohttp.ClientTimeout(total=60)
                 ) as response:
                     if response.status != 200:
+                        error_text = await response.text()
+                        logger.error(f"Ollama API error ({response.status}): {error_text}")
                         raise Exception(f"Ollama API returned status {response.status}")
 
                     result = await response.json()
                     return result
 
+        except aiohttp.ClientConnectorError:
+            logger.error(f"Ollama connection refused at {self.ollama_endpoint}. Is Ollama running?")
+            raise Exception("Cannot connect to Ollama. Please ensure Ollama is running.")
         except Exception as e:
             logger.error(f"Failed to query Ollama: {e}")
             raise

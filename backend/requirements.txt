@@ -4,6 +4,6 @@ pydantic==2.9.0
 python-multipart==0.0.9
 dnspython==2.6.1
 requests==2.32.3
-whois==1.20240129.2
+python-whois==0.8.0
 aiohttp==3.10.5
 python-dotenv==1.0.1

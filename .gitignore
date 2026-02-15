@@ -47,3 +47,4 @@ env/
 *.xpi
 *.zip
 web-ext-artifacts/
+llm_todo.md
