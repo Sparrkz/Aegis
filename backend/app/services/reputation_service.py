@@ -1,8 +1,15 @@
-import whois
 import logging
 from datetime import datetime, timezone
 from typing import List, Dict
 from urllib.parse import urlparse
+
+# whois module may vary between installations; lazily import to handle errors
+try:
+    import whois
+except ImportError:
+    whois = None
+
+
 
 logger = logging.getLogger(__name__)
 
@@ -17,49 +24,60 @@ class ReputationService:
         self.suspicious_tlds = ['.tk', '.ml', '.ga', '.cf', '.gq', '.xyz', '.top']
         self.suspicious_keywords = ['verify', 'account', 'suspended', 'urgent', 'confirm', 'update', 'secure']
 
+    # simple cache to avoid repeated WHOIS calls
+    _age_cache: dict[str, int] = {}
+
     async def get_domain_age(self, domain_or_url: str) -> int:
         """
         Get domain age in days
         Returns 0 if unable to determine
         """
-        try:
-            # Extract domain if a URL was passed
-            domain = domain_or_url
-            if '://' in domain:
-                domain = urlparse(domain).netloc
-            
-            # Remove port if present
-            domain = domain.split(':')[0]
-            
-            # For subdomains, we should check the root domain
-            # Very basic approach: take the last two parts
-            parts = domain.split('.')
-            if len(parts) > 2:
-                # Handle cases like .co.uk if needed, but for now just take last 2
-                # A better approach would be using tldextract
-                search_domain = '.'.join(parts[-2:])
-            else:
-                search_domain = domain
+        # Extract domain if a URL was passed
+        domain = domain_or_url
+        if '://' in domain:
+            domain = urlparse(domain).netloc
 
-            logger.info(f"Querying WHOIS for {search_domain}")
+        # Remove port if present
+        domain = domain.split(':')[0]
+
+        if domain in self._age_cache:
+            return self._age_cache[domain]
+
+        # For subdomains, we should check the root domain
+        parts = domain.split('.')
+        if len(parts) > 2:
+            search_domain = '.'.join(parts[-2:])
+        else:
+            search_domain = domain
+
+        logger.info(f"Querying WHOIS for {search_domain}")
+
+        if not whois or not hasattr(whois, 'whois'):
+            logger.warning("WHOIS library not available or missing 'whois' attribute; skipping domain age lookup")
+            self._age_cache[domain] = 0
+            return 0
+
+        try:
             w = whois.whois(search_domain)
 
-            if isinstance(w.creation_date, list):
-                creation_date = w.creation_date[0]
-            else:
-                creation_date = w.creation_date
+            creation_date = None
+            if hasattr(w, 'creation_date'):
+                if isinstance(w.creation_date, list):
+                    creation_date = w.creation_date[0]
+                else:
+                    creation_date = w.creation_date
 
-            if creation_date:
-                # Ensure creation_date is a datetime object
-                if isinstance(creation_date, datetime):
-                    age_days = (datetime.now(timezone.utc) - creation_date.replace(tzinfo=timezone.utc)).days
-                    logger.info(f"Domain {domain} age: {age_days} days")
-                    return max(0, age_days)
+            if creation_date and isinstance(creation_date, datetime):
+                age_days = (datetime.now(timezone.utc) - creation_date.replace(tzinfo=timezone.utc)).days
+                logger.info(f"Domain {domain} age: {age_days} days")
+                self._age_cache[domain] = max(0, age_days)
+                return self._age_cache[domain]
 
-            return 0
         except Exception as e:
             logger.warning(f"Failed to get domain age for {domain}: {e}")
-            return 0
+
+        self._age_cache[domain] = 0
+        return 0
 
     def is_suspicious_url(self, url: str) -> tuple[bool, str]:
         """

@@ -36,3 +36,12 @@ def test_parse_llm_response_malformed_returns_safe_default():
 
     assert parsed["risk_score"] == 0
     assert parsed["tactics"] == []
+
+
+# additional tests for new behavior
+
+def test_model_env_override(monkeypatch):
+    svc = IntentService()
+    monkeypatch.setenv("OLLAMA_MODEL", "test-model")
+    svc2 = IntentService()
+    assert svc2.model == "test-model"

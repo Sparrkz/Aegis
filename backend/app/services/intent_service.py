@@ -88,11 +88,12 @@ Body: {{BODY}}
                     result = await response.json()
                     return result
 
-        except aiohttp.ClientConnectorError:
-            logger.error(f"Ollama connection refused at {self.ollama_endpoint}. Is Ollama running?")
+        except aiohttp.ClientConnectorError as e:
+            logger.error(f"Ollama connection refused at {self.ollama_endpoint}. Is Ollama running? {e}")
             raise Exception("Cannot connect to Ollama. Please ensure Ollama is running.")
         except Exception as e:
-            logger.error(f"Failed to query Ollama: {e}")
+            # include traceback info
+            logger.error(f"Failed to query Ollama: {e}", exc_info=True)
             raise
 
     def parse_llm_response(self, response_text: str) -> Dict[str, any]:
