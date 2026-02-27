@@ -1,6 +1,7 @@
 import aiohttp
 import json
 import logging
+import os
 from typing import Dict
 
 logger = logging.getLogger(__name__)
@@ -13,7 +14,8 @@ class IntentService:
 
     def __init__(self, ollama_endpoint: str = "http://localhost:11434"):
         self.ollama_endpoint = ollama_endpoint
-        self.model = "llama3"
+        # Default to environment-configured Ollama model, fallback to gpt-oss:latest
+        self.model = os.getenv("OLLAMA_MODEL", "gpt-oss:latest")
 
     def build_prompt(self, subject: str, body: str, sender: str) -> str:
         """
@@ -156,8 +158,29 @@ Body: {{BODY}}
             # Query LLM
             llm_response = await self.query_llama(prompt)
 
-            # Extract response text
-            response_text = llm_response.get("response", "")
+            # Extract response text from common Ollama response shapes
+            response_text = ""
+            if isinstance(llm_response, dict):
+                # Old style: {"response": "..."}
+                if llm_response.get("response"):
+                    response_text = llm_response.get("response")
+                # Ollama/other: {"choices": [{"content": "..."}]} or {"choices": [{"text": "..."}]}
+                elif llm_response.get("choices") and isinstance(llm_response.get("choices"), list):
+                    choice = llm_response.get("choices")[0]
+                    if isinstance(choice, dict):
+                        if choice.get("content"):
+                            response_text = choice.get("content")
+                        elif choice.get("text"):
+                            response_text = choice.get("text")
+                        elif choice.get("message") and isinstance(choice.get("message"), dict):
+                            # e.g. {"message": {"content": "..."}}
+                            response_text = choice.get("message").get("content", "")
+            # Fallback: try to stringify the whole response
+            if not response_text:
+                try:
+                    response_text = json.dumps(llm_response)
+                except Exception:
+                    response_text = str(llm_response)
 
             # Parse and validate
             result = self.parse_llm_response(response_text)
