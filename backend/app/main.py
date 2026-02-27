@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+import aiohttp
 from fastapi.middleware.cors import CORSMiddleware
 import logging
 import os
@@ -55,6 +56,25 @@ ollama_endpoint = os.getenv("OLLAMA_ENDPOINT", "http://localhost:11434")
 identity_service = IdentityService()
 reputation_service = ReputationService()
 intent_service = IntentService(ollama_endpoint=ollama_endpoint)
+
+# Track Ollama availability for health checks
+ollama_available = False
+
+
+@app.on_event("startup")
+async def startup_checks():
+    """Perform lightweight startup checks (Ollama availability)"""
+    global ollama_available
+    logger.info("Running startup checks...")
+    try:
+        async with aiohttp.ClientSession() as session:
+            # Try a simple GET to the Ollama base endpoint
+            async with session.get(f"{ollama_endpoint}", timeout=aiohttp.ClientTimeout(total=5)) as resp:
+                ollama_available = resp.status == 200
+    except Exception as e:
+        logger.warning(f"Ollama health check failed: {e}")
+        ollama_available = False
+    logger.info(f"Ollama available: {ollama_available}")
 
 @app.get("/")
 async def root():
